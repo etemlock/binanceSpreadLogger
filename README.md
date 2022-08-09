@@ -7,7 +7,6 @@
 - pytest 3.5.1
 
 ## How to run
-git clone <git url>
-python3 binanceSpreadLogger
+```python3 binanceSpreadLogger```
 
 
