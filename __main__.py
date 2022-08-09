@@ -1,5 +1,5 @@
-from spreadLogger import *
-from spreadCollector import *
+from src.spreadLogger import *
+from src.spreadCollector import *
 
 if __name__ == "__main__":
     t = spreadLogger(5,'USDT',key='count',lim=100)
