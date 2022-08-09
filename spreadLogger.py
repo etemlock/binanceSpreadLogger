@@ -18,8 +18,18 @@ class spreadLogger(threading.Thread):
         self.spreadData = pd.DataFrame({'symbol':['DUMMY'],'spreads':[[0.0 for i in range(lim)]]}).set_index('symbol')
         self.client = Spot(base_URL)
         self.limit = lim
+        self._isConnected = False
         logging.basicConfig(filename='loggings.log', level=logging.INFO, format ="%(asctime)s - %(levelname)s - %(threadName)s - %(message)s")
     
+    def isConnected(self):
+        try:
+            if self.client.ping() == dict():
+                self._isConnected = True
+        except Exception as e:
+            logging.error("Unable to connect to {}  due to error : {}".format(self.client.base_url,e))
+            self._isConnected = False
+        return self._isConnected
+
     def stopit(self):
         self._stopper.set()
         
@@ -65,12 +75,18 @@ class spreadLogger(threading.Thread):
         key = key or self.key
         
         #should have a case for server not available
+        if not self.isConnected():
+            logging.warn("server is not connected. Aborting function")
+            return None
 
         #get symbols from exchange_info
         try:
             data = self.client.exchange_info()
             symInfo = data['symbols']
             syms = [sym['symbol'] for sym in symInfo if sym['quoteAsset'] == quoteAsset]
+
+            if not len(syms):
+                return []
 
             #get 24 hour Market data from filtered symbols
             data = self.client.ticker_24hr(symbols=syms)
