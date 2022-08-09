@@ -37,6 +37,10 @@ class spreadLogger(threading.Thread):
         return self._stopper.is_set()
     
     def getNotionalValues(self,symbols,top):
+        if not self.isConnected():
+            logging.warn("server is not connected. Aborting")
+            return None
+
         res = {'symbol':[], 'totalNotionalBids':[], 'totalNotionalAsks':[]}
         #get orders
         orders = self.getOrderData(symbols)
@@ -112,6 +116,10 @@ class spreadLogger(threading.Thread):
         return orders
     
     def getSpreads(self,symbols):
+        if not self.isConnected():
+            logging.warn("server is not connected. Aborting")
+            return None
+
         res = {'symbol':[], 'spreads':[]}
 
         orders = self.getOrderData(symbols)
@@ -170,6 +178,10 @@ class spreadLogger(threading.Thread):
     
         
     def run(self):        
+        if not self.isConnected():
+            logging.warn("server is not connected. Aborting")
+            self.stopit()
+
         while not self._stopper.is_set():
             try:
 

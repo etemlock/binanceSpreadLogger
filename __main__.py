@@ -39,4 +39,4 @@ if __name__ == "__main__":
     sLogger = spreadLogger(5,'USDT',key='count',lim=1,base_URL="https://testnet.binance.vision")
     REGISTRY.register(SpreadCollector(sLogger))
     while True:
-        time.sleep(2)
+        time.sleep(10)
